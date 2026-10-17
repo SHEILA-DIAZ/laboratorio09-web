@@ -1,0 +1,11 @@
+import axios from 'axios';
+import ClientWeatherWidget from './ClientWeatherWidget';
+import { weatherUrl } from '@/lib/weather';
+import type { Weather } from '@/lib/types';
+export const dynamic = 'force-dynamic';
+export default async function WeatherDashboard() {
+  let weather: Weather | undefined;
+  try { const { data } = await axios.get<Weather>(weatherUrl(-12.04, -77.03), { timeout: 12000 }); weather = data; } catch { /* El estado de error se muestra en la tarjeta. */ }
+  const rows = [['Datos iniciales', 'En el HTML del servidor', 'Después de hidratar el cliente'], ['Petición al proveedor', 'Desde el servidor', 'Desde el navegador'], ['Interactividad', 'Puede combinarse con componentes cliente', 'Cambios sin recarga'], ['SEO', 'Contenido disponible en el HTML', 'El contenido de useEffect llega después'], ['Rendimiento', 'Depende del servidor y la API', 'Depende del JavaScript y la red del usuario']];
+  return <><span className="tag">EJERCICIO 2.1 / DASHBOARD HÍBRIDO</span><h1 className="my-7 text-4xl font-bold">El clima, en dos perspectivas.</h1><div className="grid gap-6 md:grid-cols-2"><section className="panel"><span className="tag">SSR · Lima, Perú</span><h2 className="my-5 text-2xl font-bold">Así está Lima</h2>{weather ? <><p className="mt-10 text-6xl font-bold text-[#c7ed78]">{weather.current_weather.temperature}{weather.current_weather_units.temperature}</p><p className="muted mt-4">Viento: {weather.current_weather.windspeed} {weather.current_weather_units.windspeed}</p></> : <p role="alert" className="notice">No se pudo consultar Open-Meteo. Revisa tu conexión y recarga.</p>}<p className="muted mt-8 text-sm">Datos obtenidos en el servidor para esta solicitud.</p></section><ClientWeatherWidget /></div><section className="panel mt-8 overflow-x-auto"><h2 className="mb-6 text-2xl font-bold">SSR y CSR, lado a lado</h2><table className="w-full min-w-[650px] text-left text-sm"><thead><tr>{['Característica', 'SSR', 'CSR'].map(item => <th className="p-4 text-[#c7ed78]" key={item}>{item}</th>)}</tr></thead><tbody>{rows.map(row => <tr key={row[0]} className="border-t border-white/10">{row.map(cell => <td key={cell} className="p-4 text-zinc-300">{cell}</td>)}</tr>)}</tbody></table></section></>;
+}
