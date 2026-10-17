@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import MovieCard from './MovieCard';
+import MoviePoster from './MoviePoster';
 import type { Movie, MovieDetail, SearchResult } from '@/lib/types';
 
 export default function MovieSearch({ initialId }: { initialId?: string }) {
@@ -69,7 +70,7 @@ export default function MovieSearch({ initialId }: { initialId?: string }) {
     </div>
     {selected && <article aria-labelledby="detail-title" aria-busy={detailLoading} className="panel mt-8"><div className="mb-5 flex items-center justify-between gap-4"><h3 id="detail-title" className="text-2xl font-bold">Ficha del título</h3><button className="rounded-lg border border-zinc-500 px-4 py-2" onClick={() => { setSelected(''); setDetail(null); }}>Cerrar</button></div>
       {detailLoading && <p role="status">Cargando detalles…</p>}{detailError && <p role="alert" className="notice">{detailError}</p>}
-      {detail && <div className="grid gap-8 md:grid-cols-[200px_1fr]">{detail.Poster !== 'N/A' && <img className="w-full max-w-[200px] rounded-xl" src={detail.Poster} alt={`Póster de ${detail.Title}`} />}<div><span className="tag">{detail.Type} · {detail.Year}</span><h4 className="mt-4 text-3xl font-bold">{detail.Title}</h4><p className="mt-3 text-[#c7ed78]">★ {detail.imdbRating} / 10 · {detail.Runtime} · {detail.Rated}</p><p className="mt-5 leading-7 text-zinc-300">{detail.Plot}</p><dl className="mt-6 grid gap-3 text-sm sm:grid-cols-2">{Object.entries({ Género: detail.Genre, Dirección: detail.Director, Reparto: detail.Actors, Estreno: detail.Released, Idioma: detail.Language, País: detail.Country, Premios: detail.Awards, ...(detail.totalSeasons ? { Temporadas: detail.totalSeasons } : {}) }).map(([label, value]) => <div key={label}><dt className="muted">{label}</dt><dd className="mt-1">{value || 'No disponible'}</dd></div>)}</dl></div></div>}
+      {detail && <div className="grid gap-8 md:grid-cols-[200px_1fr]"><MoviePoster src={detail.Poster} title={detail.Title} className="aspect-[2/3] w-full max-w-[200px] self-start rounded-xl object-cover" /><div><span className="tag">{detail.Type} · {detail.Year}</span><h4 className="mt-4 text-3xl font-bold">{detail.Title}</h4><p className="mt-3 text-[#c7ed78]">★ {detail.imdbRating} / 10 · {detail.Runtime} · {detail.Rated}</p><p className="mt-5 leading-7 text-zinc-300">{detail.Plot}</p><dl className="mt-6 grid gap-3 text-sm sm:grid-cols-2">{Object.entries({ Género: detail.Genre, Dirección: detail.Director, Reparto: detail.Actors, Estreno: detail.Released, Idioma: detail.Language, País: detail.Country, Premios: detail.Awards, ...(detail.totalSeasons ? { Temporadas: detail.totalSeasons } : {}) }).map(([label, value]) => <div key={label}><dt className="muted">{label}</dt><dd className="mt-1">{value || 'No disponible'}</dd></div>)}</dl></div></div>}
     </article>}
   </section>;
 }
